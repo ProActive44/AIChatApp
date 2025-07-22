@@ -11,6 +11,10 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.send('Welcome to the AI Chat Server');
+})
+
 // Routes
 app.use('/api/auth', authRoutes);
 

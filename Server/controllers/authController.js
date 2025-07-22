@@ -6,15 +6,15 @@ const jwt = require('jsonwebtoken');
 // Signup: create new user
 exports.signup = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, username } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: 'Email already exists' });
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashedPassword });
+    const user = new User({ email, password: hashedPassword, username });
     await user.save();
     res.status(201).json({ message: 'User registered successfully' });
   } catch (err) {
-    res.status(500).json({ message: 'Signup error', error: err });
+    res.status(500).json({ message: 'Signup error', error: err.message });
   }
 };
 
@@ -29,7 +29,7 @@ exports.login = async (req, res) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.json({ token, user: { id: user._id, email: user.email, username: user.username } });
   } catch (err) {
-    res.status(500).json({ message: 'Login error', error: err });
+    res.status(500).json({ message: 'Login error', error: err.message });
   }
 };
 
