@@ -5,6 +5,9 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const cors = require('cors');
 
+const chatRoutes = require('./routes/chatRoutes');
+const groupRoutes = require('./routes/groupRoutes');
+
 const morgan = require('morgan');
 
 const app = express();
@@ -25,6 +28,9 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+
+app.use('/api/chat', chatRoutes);
+app.use('/api/group', groupRoutes);
 
 // Export app for testing
 module.exports = app;

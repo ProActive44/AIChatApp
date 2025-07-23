@@ -24,7 +24,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full p-8">
+    <div className="flex flex-col items-center justify-center h-full p-8 ">
       <h2 className="text-2xl font-bold mb-4">Signup</h2>
       <form className="space-y-4 w-full max-w-sm" onSubmit={handleSubmit}>
         <input name="username" type="text" placeholder="Username" value={form.username} onChange={handleChange} className="w-full p-2 border rounded" required />
