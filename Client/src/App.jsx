@@ -5,6 +5,9 @@ import Home from './pages/Home';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
 
+import PersonalChat from './pages/PersonalChat';
+import GroupChat from './pages/GroupChat';
+
 function App() {
   return (
     <Router>
@@ -15,6 +18,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/chat/:userId" element={<PersonalChat />} />
+            <Route path="/group/:groupId" element={<GroupChat />} />
           </Routes>
         </main>
       </div>
