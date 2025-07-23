@@ -1,29 +1,26 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchMessages } from '../slices/chatSlice';
 import api from '../services/api';
 
 const GroupChat = () => {
   const { groupId } = useParams();
-  const [messages, setMessages] = useState([]);
+  const dispatch = useDispatch();
+  const messages = useSelector(state => state.chat.messages);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    fetchMessages();
-    // Optionally, poll for new messages
-    // const interval = setInterval(fetchMessages, 3000);
-    // return () => clearInterval(interval);
-  }, [groupId]);
-
-  const fetchMessages = async () => {
-    try {
-      const res = await api.get(`/chat/group/${groupId}`);
-      setMessages(res.data);
-      scrollToBottom();
-    } catch (err) {
-      // handle error
+    if (groupId) {
+      dispatch(fetchMessages({ type: 'group', id: groupId }));
     }
-  };
+  }, [dispatch, groupId]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -34,14 +31,10 @@ const GroupChat = () => {
         content: input,
       });
       setInput('');
-      fetchMessages();
+      dispatch(fetchMessages({ type: 'group', id: groupId }));
     } catch (err) {
       // handle error
     }
-  };
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
