@@ -6,7 +6,7 @@ const Group = require('../models/Group');
 exports.sendMessage = async (req, res) => {
   try {
     const { recipientId, groupId, content } = req.body;
-    const senderId = req.user.id;
+    const senderId = req.user.userId;
     if (!content || (!recipientId && !groupId)) {
       return res.status(400).json({ error: 'Content and recipient/group required.' });
     }
@@ -17,6 +17,7 @@ exports.sendMessage = async (req, res) => {
         sender: senderId,
         recipient: recipientId,
         content,
+        type: 'personal',
         isGroup: false,
       });
     } else {
@@ -26,6 +27,7 @@ exports.sendMessage = async (req, res) => {
       message = new Message({
         sender: senderId,
         group: groupId,
+        type: 'group',
         content,
         isGroup: true,
       });
@@ -33,14 +35,14 @@ exports.sendMessage = async (req, res) => {
     await message.save();
     res.status(201).json(message);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to send message.' });
+    res.status(500).json({ error: 'Failed to send message.', err: err.message });
   }
 };
 
 // Fetch personal chat messages between two users
 exports.getPersonalMessages = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const otherUserId = req.params.userId;
     const messages = await Message.find({
       isGroup: false,
