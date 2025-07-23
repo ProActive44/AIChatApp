@@ -1,12 +1,15 @@
 // Signup page component
+
 import { useState } from 'react';
-import { signup } from '../services/authService';
+import { useDispatch, useSelector } from 'react-redux';
+import { signup } from '../slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 export default function Signup() {
   const [form, setForm] = useState({ email: '', password: '', username: '' });
-  const [error, setError] = useState('');
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { status, error } = useSelector(state => state.auth);
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -14,13 +17,11 @@ export default function Signup() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    setError('');
-    try {
-      await signup(form);
-      navigate('/login');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Signup failed');
-    }
+    dispatch(signup(form)).then(res => {
+      if (res.type === 'auth/signup/fulfilled') {
+        navigate('/login');
+      }
+    });
   };
 
   return (
@@ -30,7 +31,9 @@ export default function Signup() {
         <input name="username" type="text" placeholder="Username" value={form.username} onChange={handleChange} className="w-full p-2 border rounded" required />
         <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} className="w-full p-2 border rounded" required />
         <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} className="w-full p-2 border rounded" required />
-        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">Sign Up</button>
+        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded" disabled={status === 'loading'}>
+          {status === 'loading' ? 'Signing up...' : 'Sign Up'}
+        </button>
         {error && <div className="text-red-500">{error}</div>}
       </form>
     </div>
