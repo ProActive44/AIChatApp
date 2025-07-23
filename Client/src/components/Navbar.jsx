@@ -17,12 +17,12 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`p-4 flex justify-between items-center ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-blue-600 text-white'}`}>
-      <div className="font-bold text-xl">AI Chat App</div>
+    <nav className={`p-4 flex justify-between sticky top-0 z-50 items-center ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-blue-600 text-white'}`}>
+      <div className="font-bold text-xl" onClick={() => navigate('/')}>AI Chat App</div>
       <div className="space-x-4 flex items-center">
         <button
           onClick={() => dispatch(toggleTheme())}
-          className="px-2 py-1 rounded bg-gray-200 text-gray-800 hover:bg-gray-300 mr-2"
+          className={`px-2 py-1 rounded bg-gray-200 hover:bg-gray-300 mr-2 text-white`}
         >
           {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
         </button>

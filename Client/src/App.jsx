@@ -20,7 +20,7 @@ function AppRoutes() {
         <main className="flex-1">
           <Routes>
             <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<Login />} /> 
             {/* If logged in, / routes to chat layout, else redirect to login */}
             <Route path="/" element={user ? <Navigate to="/chat" /> : <Navigate to="/login" />} />
             <Route element={<ChatLayout />}>
@@ -28,6 +28,7 @@ function AppRoutes() {
               <Route path="/group/:groupId" element={<GroupChat />} />
               <Route path="/chat" element={<div className="flex items-center justify-center h-full text-gray-500">Select a user to start chatting.</div>} />
               <Route path="/group" element={<div className="flex items-center justify-center h-full text-gray-500">Select a group to start chatting.</div>} />
+              <Route path="/*" element={<div className="flex items-center justify-center h-full text-gray-500">Chat not found.</div>} />
             </Route>
           </Routes>
         </main>

@@ -1,35 +1,42 @@
-
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchUsers, fetchGroups, selectChat } from '../slices/chatSlice';
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchUsers, fetchGroups, selectChat } from "../slices/chatSlice";
 
 const ChatSidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { users, groups } = useSelector(state => state.chat);
-  const user = useSelector(state => state.auth.user);
+  const { users, groups } = useSelector((state) => state.chat);
+  const user = useSelector((state) => state.auth.user);
   const [loadingUsers, setLoadingUsers] = React.useState(true);
   const [loadingGroups, setLoadingGroups] = React.useState(true);
 
   useEffect(() => {
     setLoadingUsers(true);
     setLoadingGroups(true);
-    dispatch(fetchUsers()).finally(() => setLoadingUsers(false));
-    dispatch(fetchGroups()).finally(() => setLoadingGroups(false));
+
+    dispatch(fetchUsers())
+      .catch((err) => console.error("Error fetching users:", err))
+      .finally(() => setLoadingUsers(false));
+
+    dispatch(fetchGroups())
+      .catch((err) => console.error("Error fetching groups:", err))
+      .finally(() => setLoadingGroups(false));
   }, [dispatch]);
 
   // Exclude self from users
-  const filteredUsers = users.filter(u => u._id !== user?._id);
+  const filteredUsers = (users || []).filter((u) => u._id !== user?.id);
   // Only show groups user is a member of
-  const filteredGroups = groups.filter(g => g.members?.includes(user?._id));
+  const filteredGroups = (groups || []).filter((g) =>
+    g.members?.includes(user?.id)
+  );
 
   const handleUserClick = (u) => {
-    dispatch(selectChat({ type: 'personal', id: u._id }));
+    dispatch(selectChat({ type: "personal", id: u._id }));
     navigate(`/chat/${u._id}`);
   };
   const handleGroupClick = (g) => {
-    dispatch(selectChat({ type: 'group', id: g._id }));
+    dispatch(selectChat({ type: "group", id: g._id }));
     navigate(`/group/${g._id}`);
   };
 
@@ -42,7 +49,7 @@ const ChatSidebar = () => {
           <div className="text-gray-400 px-3 py-2">Loading users...</div>
         ) : (
           <ul>
-            {filteredUsers.map(user => (
+            {filteredUsers.map((user) => (
               <li
                 key={user._id}
                 className="cursor-pointer px-3 py-2 rounded hover:bg-blue-100 mb-1"
@@ -60,7 +67,7 @@ const ChatSidebar = () => {
           <div className="text-gray-400 px-3 py-2">Loading groups...</div>
         ) : (
           <ul>
-            {filteredGroups.map(group => (
+            {filteredGroups.map((group) => (
               <li
                 key={group._id}
                 className="cursor-pointer px-3 py-2 rounded hover:bg-green-100 mb-1"
