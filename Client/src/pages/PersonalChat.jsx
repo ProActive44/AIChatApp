@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMessages } from '../slices/chatSlice';
 import api from '../services/api';
+import { getSocket } from '../services/socket';
 
 const PersonalChat = () => {
   const { userId } = useParams();
@@ -11,6 +12,32 @@ const PersonalChat = () => {
   const currentUser = useSelector(state => state.auth.user); // 👈 Get logged-in user
   const [input, setInput] = useState('');
   const messagesEndRef = useRef(null);
+
+  const [socket, setSocket] = useState(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const [otherTyping, setOtherTyping] = useState(false);
+  const typingTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    const s = getSocket(localStorage.getItem('token'));
+    setSocket(s);
+    s.emit('setup', currentUser);
+    s.on('connected', () => {
+      s.emit('join chat', userId);
+    });
+    s.on('message received', (msg) => {
+      if ((msg.receiver === currentUser.id && msg.sender === userId) || (msg.sender === currentUser.id && msg.receiver === userId)) {
+        dispatch(fetchMessages({ type: 'personal', id: userId }));
+      }
+    });
+    s.on('typing', () => setOtherTyping(true));
+    s.on('stop typing', () => setOtherTyping(false));
+    return () => {
+      s.disconnect();
+    };
+    // eslint-disable-next-line
+  }, [currentUser, userId, dispatch]);
 
   useEffect(() => {
     if (userId) {
@@ -25,16 +52,28 @@ const PersonalChat = () => {
   const sendMessage = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
-    try {
-      await api.post('/chat/send', {
+    if (socket) {
+      socket.emit('new message', {
         recipientId: userId,
         content: input,
       });
-      setInput('');
-      dispatch(fetchMessages({ type: 'personal', id: userId }));
-    } catch (err) {
-      // handle error
     }
+    setInput('');
+    dispatch(fetchMessages({ type: 'personal', id: userId }));
+  };
+
+  const handleInputChange = (e) => {
+    setInput(e.target.value);
+    if (!socket) return;
+    if (!isTyping) {
+      setIsTyping(true);
+      socket.emit('typing', userId);
+    }
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+      socket.emit('stop typing', userId);
+    }, 1200);
   };
 
 
@@ -48,7 +87,6 @@ const PersonalChat = () => {
               key={msg._id}
               className={`mb-2 flex flex-col ${isSender ? 'items-end' : 'items-start'}`}
             >
-              {/* <div className="text-xs text-gray-500"> {isSender ? "You" : currentUser.username}</div> */}
               <div
                 className={`inline-block px-2 py-1 rounded-lg ${
                   isSender
@@ -62,6 +100,9 @@ const PersonalChat = () => {
             </div>
           );
         })}
+        {otherTyping && (
+          <div className="text-xs text-blue-400 mb-2">Typing...</div>
+        )}
         <div ref={messagesEndRef} />
       </div>
       <form onSubmit={sendMessage} className="flex">
@@ -69,7 +110,7 @@ const PersonalChat = () => {
           type="text"
           className="flex-1 border rounded-l px-4 py-2 focus:outline-none"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
           placeholder="Type your message..."
         />
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-r">Send</button>
