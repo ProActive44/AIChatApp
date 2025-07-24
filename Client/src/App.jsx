@@ -10,6 +10,8 @@ import PersonalChat from './pages/PersonalChat';
 import GroupChat from './pages/GroupChat';
 import ChatLayout from './components/ChatLayout';
 
+import { SpeedInsights } from "@vercel/speed-insights/next"
+
 
 function AppRoutes() {
   const user = useSelector(state => state.auth.user);
@@ -41,6 +43,9 @@ function App() {
   return (
     <Provider store={store}>
       <AppRoutes />
+
+      {/* Speed Insights component for performance monitoring */}
+      <SpeedInsights />
     </Provider>
   );
 }
