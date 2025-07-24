@@ -6,7 +6,7 @@ import { fetchUsers, fetchGroups, selectChat } from "../slices/chatSlice";
 const ChatSidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { users, groups } = useSelector((state) => state.chat);
+  const { users, groups, selected } = useSelector((state) => state.chat);
   const user = useSelector((state) => state.auth.user);
   const [loadingUsers, setLoadingUsers] = React.useState(true);
   const [loadingGroups, setLoadingGroups] = React.useState(true);
@@ -52,7 +52,7 @@ const ChatSidebar = () => {
             {filteredUsers.map((user) => (
               <li
                 key={user._id}
-                className="cursor-pointer px-3 py-2 rounded hover:bg-blue-100 mb-1"
+                className={`cursor-pointer px-3 py-2 rounded mb-1 hover:bg-blue-100 ${selected?.type === 'personal' && selected?.id === user._id ? 'bg-blue-200 font-bold' : ''}`}
                 onClick={() => handleUserClick(user)}
               >
                 {user.name || user.username || user.email}
@@ -70,7 +70,7 @@ const ChatSidebar = () => {
             {filteredGroups.map((group) => (
               <li
                 key={group._id}
-                className="cursor-pointer px-3 py-2 rounded hover:bg-green-100 mb-1"
+                className={`cursor-pointer px-3 py-2 rounded mb-1 hover:bg-green-100 ${selected?.type === 'group' && selected?.id === group._id ? 'bg-green-200 font-bold' : ''}`}
                 onClick={() => handleGroupClick(group)}
               >
                 {group.name}

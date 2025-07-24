@@ -68,16 +68,20 @@ exports.getPersonalMessages = async (req, res) => {
 exports.getGroupMessages = async (req, res) => {
   try {
     const groupId = req.params.groupId;
+
     const group = await Group.findById(groupId);
     if (!group) return res.status(404).json({ error: 'Group not found.' });
 
-    const messages = await Message.find({ group: groupId, type: 'group' }).sort({ timestamp: 1 });
+    const messages = await Message.find({ group: groupId, type: 'group' })
+      .sort({ timestamp: 1 })
+      .populate('sender', 'username avatar'); 
 
     res.json(messages);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch group messages.' });
   }
 };
+
 
 // Mark messages as seen (for personal or group chat)
 exports.markMessagesSeen = async (req, res) => {

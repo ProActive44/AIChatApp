@@ -37,6 +37,7 @@ const PersonalChat = () => {
     }
   };
 
+
   return (
     <div className="flex flex-col h-full max-h-screen p-4">
       <div className="flex-1 overflow-y-auto mb-4 bg-white rounded shadow p-4">
@@ -47,7 +48,7 @@ const PersonalChat = () => {
               key={msg._id}
               className={`mb-2 flex flex-col ${isSender ? 'items-end' : 'items-start'}`}
             >
-              <div className="text-xs text-gray-500">{msg.senderName || msg.sender}</div>
+              {/* <div className="text-xs text-gray-500"> {isSender ? "You" : currentUser.username}</div> */}
               <div
                 className={`inline-block px-2 py-1 rounded-lg ${
                   isSender
