@@ -80,6 +80,7 @@ function setupSocket(server) {
     });
 
     socket.on('disconnect', () => {
+      socket.emit('disconnected');
       connectedUsers.delete(userId);
     });
   });
