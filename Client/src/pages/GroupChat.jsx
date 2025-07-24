@@ -38,28 +38,25 @@ const GroupChat = () => {
     }
   };
 
+  console.log(messages)
 
   return (
     <div className="flex flex-col h-full max-h-screen p-4">
       <div className="flex-1 overflow-y-auto mb-4 bg-white rounded shadow p-4">
         {messages.map((msg) => {
-          const isSender = msg.sender === user.id;
+          const isSender = msg.sender._id === user.id;
+          let senderName = msg.sender.username;
+          
           return (
             <div
               key={msg._id}
-              className={`mb-2 flex flex-col ${
-                isSender ? "items-end" : "items-start"
-              }`}
+              className={`mb-2 flex flex-col ${isSender ? "items-end" : "items-start"}`}
             >
               <div className="text-xs text-gray-500">
-                {msg.senderName || msg.sender}
+                {senderName || "Unknown User"}
               </div>
               <div
-                className={`inline-block px-2 py-1 rounded-lg ${
-                  isSender
-                    ? "bg-green-500 text-white"
-                    : "bg-green-800 text-white"
-                }`}
+                className={`inline-block px-2 py-1 rounded-lg ${isSender ? "bg-green-500 text-white" : "bg-green-800 text-white"}`}
               >
                 {msg.content}
               </div>
