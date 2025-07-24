@@ -10,7 +10,7 @@ import PersonalChat from './pages/PersonalChat';
 import GroupChat from './pages/GroupChat';
 import ChatLayout from './components/ChatLayout';
 
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 
 function AppRoutes() {
