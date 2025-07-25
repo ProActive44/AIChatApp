@@ -1,12 +1,12 @@
-const { Server } = require('socket.io');
-const jwt = require('jsonwebtoken');
-const Message = require('./models/Message');
-const User = require('./models/User');
-const Group = require('./models/Group');
+import { Server } from 'socket.io';
+import jwt from 'jsonwebtoken';
+import Message from './models/Message.js';
+import User from './models/User.js';
+import Group from './models/Group.js';
 
 const connectedUsers = new Map(); // userId -> socket
 
-function setupSocket(server) {
+export default function setupSocket(server) {
   const io = new Server(server, {
     cors: {
       origin: '*',
@@ -88,4 +88,3 @@ function setupSocket(server) {
   return io;
 }
 
-module.exports = setupSocket;

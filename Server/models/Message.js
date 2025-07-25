@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const messageSchema = new mongoose.Schema({
   sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -22,4 +22,5 @@ const messageSchema = new mongoose.Schema({
 messageSchema.index({ receiver: 1 });
 messageSchema.index({ group: 1 });
 
-module.exports = mongoose.model('Message', messageSchema);
+const Message = mongoose.model('Message', messageSchema);
+export default Message;

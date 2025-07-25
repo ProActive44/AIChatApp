@@ -1,8 +1,8 @@
 // JWT token verification middleware
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 // Protect routes by verifying JWT
-module.exports = (req, res, next) => {
+export default (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'No token provided' });

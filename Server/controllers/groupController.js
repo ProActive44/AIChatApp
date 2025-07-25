@@ -1,8 +1,8 @@
-const Group = require('../models/Group');
-const User = require('../models/User');
+import Group from '../models/Group.js';
+import User from '../models/User.js';
 
 // Create a group with multiple members
-exports.createGroup = async (req, res) => {
+export const createGroup = async (req, res) => {
   try {
     const { name, members } = req.body;
     const creatorId = req.user.userId;

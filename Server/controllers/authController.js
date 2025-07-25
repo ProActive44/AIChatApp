@@ -1,10 +1,10 @@
 // Authentication controller: signup, login, logout
-const User = require('../models/User');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+import User from '../models/User.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 // Signup: create new user
-exports.signup = async (req, res) => {
+export const signup = async (req, res) => {
   try {
     const { email, password, username } = req.body;
     const existingUser = await User.findOne({ email });
@@ -19,7 +19,7 @@ exports.signup = async (req, res) => {
 };
 
 // Login: authenticate user and issue JWT
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -34,7 +34,7 @@ exports.login = async (req, res) => {
 };
 
 // Logout: handled client-side by removing token
-exports.logout = (req, res) => {
+export const logout = (req, res) => {
   // For stateless JWT, logout is handled on client by removing token
   res.json({ message: 'Logged out' });
 };

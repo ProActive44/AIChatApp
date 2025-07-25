@@ -1,9 +1,9 @@
-const Message = require('../models/Message');
-const User = require('../models/User');
-const Group = require('../models/Group');
+import Message from '../models/Message.js';
+import User from '../models/User.js';
+import Group from '../models/Group.js';
 
 // Send a message (personal or group)
-exports.sendMessage = async (req, res) => {
+export const sendMessage = async (req, res) => {
   try {
     const { recipientId, groupId, content } = req.body;
     const senderId = req.user.userId;
@@ -45,7 +45,7 @@ exports.sendMessage = async (req, res) => {
 };
 
 // Fetch personal chat messages between two users
-exports.getPersonalMessages = async (req, res) => {
+export const getPersonalMessages = async (req, res) => {
   try {
     const userId = req.user.userId;
     const otherUserId = req.params.userId;
@@ -65,7 +65,7 @@ exports.getPersonalMessages = async (req, res) => {
 };
 
 // Fetch group chat messages by group ID
-exports.getGroupMessages = async (req, res) => {
+export const getGroupMessages = async (req, res) => {
   try {
     const groupId = req.params.groupId;
 
@@ -84,7 +84,7 @@ exports.getGroupMessages = async (req, res) => {
 
 
 // Mark messages as seen (for personal or group chat)
-exports.markMessagesSeen = async (req, res) => {
+export const markMessagesSeen = async (req, res) => {
   try {
     const userId = req.user.userId;
     const { messageIds } = req.body; // array of message IDs

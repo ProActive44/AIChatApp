@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express';
+import { createGroup } from '../controllers/groupController.js';
+import authMiddleware from '../middleware/authMiddleware.js';
 const router = express.Router();
-const groupController = require('../controllers/groupController');
-const authMiddleware = require('../middleware/authMiddleware');
 
 // Protect all routes
 router.use(authMiddleware);
 
 // Create a group
-router.post('/create', groupController.createGroup);
+router.post('/create', createGroup);
 
-module.exports = router;
+export default router;

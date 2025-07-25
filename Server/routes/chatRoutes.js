@@ -1,7 +1,9 @@
-const express = require('express');
+import express from 'express';
+import { sendMessage, getPersonalMessages, getGroupMessages, markMessagesSeen } from '../controllers/chatController.js';
+import authMiddleware from '../middleware/authMiddleware.js';
+import User from '../models/User.js';
+import Group from '../models/Group.js';
 const router = express.Router();
-const chatController = require('../controllers/chatController');
-const authMiddleware = require('../middleware/authMiddleware');
 
 // Protect all routes
 router.use(authMiddleware);
@@ -9,7 +11,7 @@ router.use(authMiddleware);
 // Get all users (for chat sidebar)
 router.get('/users', async (req, res) => {
   try {
-    const users = await require('../models/User').find({}, '-password');
+    const users = await User.find({}, '-password');
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch users.' });
@@ -19,7 +21,7 @@ router.get('/users', async (req, res) => {
 // Get all groups (for chat sidebar)
 router.get('/groups', async (req, res) => {
   try {
-    const groups = await require('../models/Group').find({});
+    const groups = await Group.find({});
     res.json(groups);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch groups.' });
@@ -27,15 +29,15 @@ router.get('/groups', async (req, res) => {
 });
 
 // Send message (personal or group)
-router.post('/send', chatController.sendMessage);
+router.post('/send', sendMessage);
 
 // Mark messages as seen
-router.post('/seen', chatController.markMessagesSeen);
+router.post('/seen', markMessagesSeen);
 
 // Get personal chat messages between two users
-router.get('/personal/:userId', chatController.getPersonalMessages);
+router.get('/personal/:userId', getPersonalMessages);
 
 // Get group chat messages by group ID
-router.get('/group/:groupId', chatController.getGroupMessages);
+router.get('/group/:groupId', getGroupMessages);
 
-module.exports = router;
+export default router;

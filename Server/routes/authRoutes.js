@@ -1,11 +1,11 @@
 // Auth routes: signup, login, logout
-const express = require('express');
+import express from 'express';
+import { signup, login, logout } from '../controllers/authController.js';
+import authMiddleware from '../middleware/authMiddleware.js';
 const router = express.Router();
-const authController = require('../controllers/authController');
-const authMiddleware = require('../middleware/authMiddleware');
 
-router.post('/signup', authController.signup); // Register
-router.post('/login', authController.login);   // Login
-router.post('/logout', authMiddleware, authController.logout); // Logout (protected)
+router.post('/signup', signup); // Register
+router.post('/login', login);   // Login
+router.post('/logout', authMiddleware, logout); // Logout (protected)
 
-module.exports = router;
+export default router;
