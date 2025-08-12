@@ -1,11 +1,12 @@
-import { Button } from "@/components/ui/button"
+import React from "react";
+import Login from "./pages/Login";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center border-8 border-red-400">
-      <Button>Click me</Button>
+    <div>
+      <Login />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
