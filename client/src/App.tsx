@@ -1,11 +1,10 @@
-import './App.css'
+import { Button } from "@/components/ui/button"
 
 function App() {
-
   return (
-    <>
-       Welcome to your new chat Application
-    </>
+    <div className="flex min-h-svh flex-col items-center justify-center border-8 border-red-400">
+      <Button>Click me</Button>
+    </div>
   )
 }
 
